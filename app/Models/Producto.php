@@ -17,6 +17,7 @@ class Producto extends Model
         'idProducto',
         'nombre',
         'tipo',
+        'precio',
         'imgBanner',
         'imgProducto',
         'descripcion',

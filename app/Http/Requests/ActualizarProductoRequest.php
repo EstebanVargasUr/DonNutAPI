@@ -26,9 +26,9 @@ class ActualizarProductoRequest extends FormRequest
         return [
             "nombre" => "required",
             'tipo' => "required",
+            'precio' => "required|numeric",
             'imgProducto'  => "required",
             'descripcion'  => "required",
-            'fechaRegistro'  => "required",
             'estado'  => "required"
         ];
     }

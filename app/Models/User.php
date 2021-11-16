@@ -15,8 +15,26 @@ class User extends Authenticatable implements JWTSubject
 
     protected $primaryKey = 'idUsuario'; //Define el nombre de la llave primaria de la tabla
     protected $table = "dn_usuarios"; //Define la tabla con la que va a trabajar el modelo
-    const CREATED_AT  = null;
-    const UPDATED_AT = null;
+    const CREATED_AT  = null; //Desabilita la variable CREATED_AT
+    const UPDATED_AT = null; //Desabilita la variable UPDATED_AT
+
+    //Roles disponibles para los usuarios del sistema
+    const ROL_SUPERADMIN = 'SUPERADMIN';
+    const ROL_ADMIN = 'ADMIN';
+    const ROL_REPARTIDOR = 'REPARTIDOR';
+    const ROL_PREPARADOR = 'PREPARADOR';
+    const ROL_USUARIO = 'USUARIO';
+
+
+    //Jerarquía de roles
+    private const ROLES_HIERARCHY = [
+        self::ROL_SUPERADMIN => [self::ROL_ADMIN],
+        self::ROL_ADMIN => [self::ROL_USUARIO],
+        self::ROL_REPARTIDOR => [self::ROL_USUARIO],
+        self::ROL_PREPARADOR => [self::ROL_USUARIO],
+        self::ROL_USUARIO => []
+    ];
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -32,7 +50,7 @@ class User extends Authenticatable implements JWTSubject
         'telefono',
         'fechaRegistro',
         'estado',
-        'fk_idRol',
+        'rol',
     ];
 
     /**
@@ -41,7 +59,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        
+        'password',
     ];
 
     /**
@@ -66,5 +84,26 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function isGranted($rol)
+    {
+        if ($rol === $this->rol) {
+            return true;
+        }
+        return self::isRoleInHierarchy($rol, self::ROLES_HIERARCHY[$this->rol]);
+    }
+
+    private static function isRoleInHierarchy($rol, $rol_hierarchy)
+    {
+        if (in_array($rol, $rol_hierarchy)) {
+            return true;
+        }
+        foreach ($rol_hierarchy as $rol_included) {
+            if (self::isRoleInHierarchy($rol, self::ROLES_HIERARCHY[$rol_included])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -17,7 +17,7 @@ class ProductoController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['index','show']]);
+        $this->middleware('auth:api', ['except' => ['index','show','getByTipo']]);
     }
 
     public function index()
@@ -36,6 +36,7 @@ class ProductoController extends Controller
      */
     public function store(GuardarProductoRequest $request)
     {
+        $this->authorize('create', Producto::class);
         // Producto::create($request->all());
         // return response()->json([
         //     'res' => true,
@@ -64,6 +65,17 @@ class ProductoController extends Controller
                 ->setStatusCode(202);;
     }
 
+    public function getByTipo($tipoProducto)
+    {
+        // return response()->json([
+        //     'res' => true,
+        //     'producto' => $producto
+        // ], 200);
+        return (new ProductoResource(Producto::where('tipo',$tipoProducto)->get()))
+                ->response()
+                ->setStatusCode(202);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -73,6 +85,7 @@ class ProductoController extends Controller
      */
     public function update(ActualizarProductoRequest $request, Producto $producto)
     {
+        $this->authorize('update', $producto);
         // $producto->update($request->all());
         // return response()->json([
         //     'res' => true,
@@ -93,6 +106,7 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
+        $this->authorize('delete', $producto);
         // $producto->delete();
         // return response()->json([
         //     'res' => true,

@@ -15,6 +15,9 @@ class ProductoResource extends JsonResource
     public function toArray($request)
     {
         return parent::toArray($request);
+        // return [
+        //     'idProducto' =>$this->idProducto,
+        // ];
     }
 
     public function with($request)

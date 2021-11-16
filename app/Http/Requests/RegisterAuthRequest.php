@@ -30,9 +30,6 @@ class RegisterAuthRequest extends FormRequest
             'email' => 'required|string|email|max:50|unique:dn_usuarios,email',
             'password' => 'required:string',
             'telefono' => 'required',
-            'fechaRegistro' => 'required',
-            'estado' => 'required',
-            'fk_idRol' => 'required',
         ];
     }
 }
