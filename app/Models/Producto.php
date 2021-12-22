@@ -25,4 +25,8 @@ class Producto extends Model
         'estado'
     ];
 
+    public function carritoProducto()
+    {
+        return $this->hasMany(CarritoProducto::class,'fk_idProducto','idProducto');
+    }
 }

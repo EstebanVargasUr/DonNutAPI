@@ -23,7 +23,7 @@ class ProductoController extends Controller
     public function index()
     {
         //return Producto::all();
-        return  (new ProductoResource(Producto::all()))
+        return  (ProductoResource::collection(Producto::all()))
                 ->response()
                 ->setStatusCode(202);
     }
@@ -71,7 +71,7 @@ class ProductoController extends Controller
         //     'res' => true,
         //     'producto' => $producto
         // ], 200);
-        return (new ProductoResource(Producto::where('tipo',$tipoProducto)->get()))
+        return (ProductoResource::collection(Producto::where('tipo',$tipoProducto)->get()))
                 ->response()
                 ->setStatusCode(202);
     }

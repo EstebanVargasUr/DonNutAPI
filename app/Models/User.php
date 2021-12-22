@@ -86,6 +86,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function carrito()
+    {
+        return $this->hasOne(Carrito::class,'fk_idUsuario');
+    }
+
     public function isGranted($rol)
     {
         if ($rol === $this->rol) {

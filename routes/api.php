@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ProductoController;
+use App\Http\Controllers\API\ProductoCarritoController;
 use App\Http\Controllers\API\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,13 @@ Route::get('/productos/{producto}', [ProductoController::class, 'show']);
 Route::get('/productos/tipo/{tipoProducto}', [ProductoController::class, 'getByTipo']);
 Route::put('/productos/{producto}', [ProductoController::class, 'update']);
 //Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
+
+//ProductoCarrito
+Route::get('/productoscarritos', [ProductoCarritoController::class, 'index']);
+Route::post('/productoscarritos', [ProductoCarritoController::class, 'store']);
+Route::get('/productoscarritos/producto/{producto}', [ProductoCarritoController::class, 'getByProducto']);
+Route::put('/productoscarritos/{productoCarrito}', [ProductoCarritoController::class, 'update']);
+Route::delete('/productoscarritos/{productoCarrito}', [ProductoCarritoController::class, 'destroy']);
 
 Route::group([
     'middleware' => 'api',
