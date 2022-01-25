@@ -33,8 +33,8 @@ class Carrito extends Model
         return $this->belongsTo(User::class,'fk_idUsuario');
     }
 
-    public function carritoProducto()
+    public function productoCarrito()
     {
-        return $this->hasMany(CarritoProducto::class,'fk_idCarrito','idCarrito');
+        return $this->hasMany(ProductoCarrito::class,'fk_idCarrito','idCarrito');
     }
 }

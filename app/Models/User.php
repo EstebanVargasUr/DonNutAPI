@@ -91,6 +91,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Carrito::class,'fk_idUsuario');
     }
 
+    public function cliente()
+    {
+        return $this->hasMany(Pedido::class,'fk_idUsuarioCliente','idUsuario');
+    }
+
+    public function repartidor()
+    {
+        return $this->hasMany(Pedido::class,'fk_idUsuarioRepartidor','idUsuario');
+    }
+
     public function isGranted($rol)
     {
         if ($rol === $this->rol) {
