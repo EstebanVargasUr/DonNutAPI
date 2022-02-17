@@ -27,7 +27,8 @@ class GuardarProductoRequest extends FormRequest
             "nombre" => "required",
             'tipo' => "required",
             'precio' => "required|numeric",
-            'imgProducto'  => "required",
+            'imgProducto'  => "required|image",
+            'imgBanner' => "image",
             'descripcion'  => "required",
             'estado'  => "required"
         ];

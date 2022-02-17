@@ -62,12 +62,12 @@ class ProductoCarritoController extends Controller
     {
         $productoCarrito = ProductoCarrito::where(['fk_idCarrito'=>auth()->user()->carrito->idCarrito,'fk_idProducto'=>$producto])
         ->with('producto:idProducto,nombre,tipo,precio,imgProducto,descripcion')
-        ->get(['cantidad','idProductoCarrito','fk_idProducto']);
-
-        return (ProductoCarritoResource::collection($productoCarrito))  
+        ->firstOrFail(['cantidad','idProductoCarrito','fk_idProducto']);
+        
+        return (new ProductoCarritoResource($productoCarrito))
         ->additional(['msg' => 'Producto obtenido Correctamente'])
         ->response()
-        ->setStatusCode(202);
+        ->setStatusCode(200);
     }
 
     /**

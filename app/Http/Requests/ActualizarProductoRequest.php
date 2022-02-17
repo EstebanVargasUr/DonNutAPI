@@ -24,12 +24,13 @@ class ActualizarProductoRequest extends FormRequest
     public function rules()
     {
         return [
-            "nombre" => "required",
-            'tipo' => "required",
-            'precio' => "required|numeric",
-            'imgProducto'  => "required",
-            'descripcion'  => "required",
-            'estado'  => "required"
+            "nombre",
+            'tipo',
+            'precio' => "numeric",
+            'imgProducto'  => "image",
+            'imgProducto'  => "image",
+            'descripcion',
+            'estado'
         ];
     }
 }

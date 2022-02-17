@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GuardarProductoRequest;
 use App\Http\Requests\ActualizarProductoRequest;
@@ -22,7 +23,6 @@ class ProductoController extends Controller
 
     public function index()
     {
-        //return Producto::all();
         return  (ProductoResource::collection(Producto::all()))
                 ->response()
                 ->setStatusCode(202);
@@ -37,15 +37,22 @@ class ProductoController extends Controller
     public function store(GuardarProductoRequest $request)
     {
         $this->authorize('create', Producto::class);
-        // Producto::create($request->all());
-        // return response()->json([
-        //     'res' => true,
-        //     'msg' => 'Producto registrado Correctamente'
-        // ], 200);
-        return (new ProductoResource(Producto::create($request->all())))
+        
+        $producto = new Producto($request->all());
+        
+        if($request->imgBanner){
+            $path = $request->imgBanner->store('public/images/banners');
+            $producto->imgBanner = str_replace("public", "/storage", $path);
+        }
+
+        $path = $request->imgProducto->store('public/images/productos');
+        $producto->imgProducto = str_replace("public", "/storage", $path);
+        $producto->save();
+
+        return (new ProductoResource($producto))
                 ->additional(['msg' => 'Producto registrado Correctamente'])
                 ->response()
-                ->setStatusCode(202);
+                ->setStatusCode(201);
     }
 
     /**
@@ -56,21 +63,13 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
-        // return response()->json([
-        //     'res' => true,
-        //     'producto' => $producto
-        // ], 200);
         return (new ProductoResource($producto))
                 ->response()
-                ->setStatusCode(202);;
+                ->setStatusCode(202);
     }
 
     public function getByTipo($tipoProducto)
     {
-        // return response()->json([
-        //     'res' => true,
-        //     'producto' => $producto
-        // ], 200);
         return (ProductoResource::collection(Producto::where('tipo',$tipoProducto)->get()))
                 ->response()
                 ->setStatusCode(202);
@@ -84,14 +83,28 @@ class ProductoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(ActualizarProductoRequest $request, Producto $producto)
-    {
+    {   
         $this->authorize('update', $producto);
-        // $producto->update($request->all());
-        // return response()->json([
-        //     'res' => true,
-        //     'msg' => 'Producto actualizado Correctamente'
-        // ], 200);
-        $producto->update($request->all());
+
+        if($request->imgBanner){
+            $path = $request->imgBanner->store('public/images/banners');
+            if($producto->imgBanner != '/storage/images/default.svg')
+            Storage::delete(str_replace("storage", "public", $producto->imgBanner));
+            $producto->imgBanner = str_replace("public", "/storage", $path);
+            $producto->save();
+        }
+
+        if($request->imgProducto){
+            if(Storage::exists(str_replace("storage", "public", $producto->imgProducto))){
+                Storage::delete(str_replace("storage", "public", $producto->imgProducto));
+            }
+            $path = $request->imgProducto->store('public/images/productos');
+            $producto->imgProducto = str_replace("public", "/storage", $path);
+            $producto->save();
+        }
+
+        $producto->update($request->except(['imgProducto','imgBanner']));
+
         return (new ProductoResource($producto))
                 ->additional(['msg' => 'Producto actualizado Correctamente'])
                 ->response()
@@ -107,11 +120,7 @@ class ProductoController extends Controller
     public function destroy(Producto $producto)
     {
         $this->authorize('delete', $producto);
-        // $producto->delete();
-        // return response()->json([
-        //     'res' => true,
-        //     'msg' => 'Producto Eliminado Correctamente'
-        // ], 200);
+
         $producto->delete();
         return (new ProductoResource($producto))
                 ->additional(['msg' => 'Producto eliminado Correctamente'])
