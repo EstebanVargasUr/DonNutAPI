@@ -2,14 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\Pedido;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PedidoPolicy
+class UserPolicy
 {
     use HandlesAuthorization;
-
     public function before(User $user, $ability)
     {
         if ($user->isGranted(User::ROL_SUPERADMIN)) {
@@ -25,32 +23,20 @@ class PedidoPolicy
      */
     public function viewAny(User $user)
     {
-        // 
+        //
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Pedido  $pedido
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Pedido $pedido)
+    public function view(User $user)
     {
-        return $user->idUsuario === $pedido->fk_idUsuarioCliente || 
-        $user->isGranted(User::ROL_REPARTIDOR) || $user->isGranted(User::ROL_PREPARADOR);
+       //
     }
-
-    public function viewPreraracion(User $user)
-    {
-        return $user->isGranted(User::ROL_PREPARADOR);
-    }
-
-    public function viewEntrega(User $user)
-    {
-        return $user->isGranted(User::ROL_REPARTIDOR);
-    }
-
 
     /**
      * Determine whether the user can create models.
@@ -60,30 +46,29 @@ class PedidoPolicy
      */
     public function create(User $user)
     {
-        return true;
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Pedido  $pedido
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Pedido $pedido)
+    public function update(User $user, User $_user)
     {
-        return $user->idUsuario === $pedido->fk_idUsuarioCliente || 
-        $user->isGranted(User::ROL_REPARTIDOR) || $user->isGranted(User::ROL_PREPARADOR);
+        return $user->idUsuario === $_user->idUsuario;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Pedido  $pedido
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Pedido $pedido)
+    public function delete(User $user, User $model)
     {
         //
     }
@@ -92,10 +77,10 @@ class PedidoPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Pedido  $pedido
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Pedido $pedido)
+    public function restore(User $user, User $model)
     {
         //
     }
@@ -104,10 +89,10 @@ class PedidoPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Pedido  $pedido
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Pedido $pedido)
+    public function forceDelete(User $user, User $model)
     {
         //
     }

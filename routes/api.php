@@ -4,6 +4,7 @@ use App\Http\Controllers\API\ProductoController;
 use App\Http\Controllers\API\ProductoCarritoController;
 use App\Http\Controllers\API\PedidoController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,13 @@ Route::post('/pedidos', [PedidoController::class, 'store']);
 Route::get('/pedidos/{id}', [PedidoController::class, 'show']);
 Route::get('/pedidos/lista/preparacion', [PedidoController::class, 'getPreparacion']);
 Route::get('/pedidos/lista/entrega', [PedidoController::class, 'getEntrega']);
+Route::get('/pedidos/lista/historial', [PedidoController::class, 'getHistorialPedidoByUsuario']);
+
+//Usuario
+Route::put('/user/{user}', [UserController::class, 'update'])->name('update');
+Route::get('/user/{user}', [UserController::class, 'show']);
+Route::get('/user/rol/{rol}', [UserController::class, 'getUserByRol']);
+Route::get('/user/email/{email}', [UserController::class, 'getUserByEmail']);
 
 Route::group([
     'middleware' => 'api',
@@ -53,4 +61,5 @@ Route::group([
     Route::post('refresh', [AuthController::class, 'refresh'])->name('refresh');
     Route::post('me', [AuthController::class, 'me'])->name('me');
     Route::post('register', [AuthController::class, 'register'])->name('register');
+    
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GuardarPedidoRequest;
 use App\Http\Requests\ActualizarPedidoRequest;
+use App\Http\Resources\HistorialPedidoResource;
 use App\Http\Resources\PedidoResource;
 use App\Http\Resources\PedidoPreparacionResource;
 use App\Http\Resources\PedidoEntregaResource;
@@ -75,6 +76,15 @@ class PedidoController extends Controller
         ->get(['idPedido','estado','fechaRegistro','fk_idUsuarioCliente','fk_idUsuarioRepartidor']);
         
         return (PedidoEntregaResource::collection($pedido))
+                ->response()
+                ->setStatusCode(200);
+    }
+    public function getHistorialPedidoByUsuario()
+    {   
+        $pedido = Pedido::where('fk_idUsuarioCliente', auth()->user()->idUsuario)
+        ->get(['idPedido','estado','fechaRegistro']);
+        
+        return (HistorialPedidoResource::collection($pedido))
                 ->response()
                 ->setStatusCode(200);
     }
