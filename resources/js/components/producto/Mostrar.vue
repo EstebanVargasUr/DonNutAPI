@@ -2,12 +2,24 @@
     <div class="container">
         <Header></Header>
         <div  style="margin-top:80px;">
+
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1" v-on:click="tabs('')">Todo</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2" v-on:click="tabs('Dulces')">Dulces</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio3" v-on:click="tabs('Saladas')">Saladas</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio4" v-on:click="tabs('Banners')">Banners</label>
+            </div> 
+
             <div class="row mt-4">
                 <div class="col">
-                    <form class="d-flex">
-                    <input class="form-control me-2 w-40" type="search" placeholder="Buscar" aria-label="Buscar">
-                    <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
-                    </form>
+                    <input class="form-control me-2 w-40" v-on:keyup="buscar" v-model="DatoBuscar" type="search" placeholder="Buscar" aria-label="Buscar">
                 </div>
                 <div class="col text-end">
                     <router-link :to='{name:"crearProducto"}' class="btn btn-primary w-10"><i class="fas fa-plus-circle"></i></router-link>
@@ -16,7 +28,7 @@
             
 
             <div class="row gy-4 my-4">
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6"  v-for="producto in productos" :key="producto.idProducto">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6"  v-for="producto in productosMostrar" :key="producto.idProducto">
                     <div  class="card h-100">       
                             <img v-bind:src="producto.imgProducto" class="card-img-top" alt="images">
                             <div class="card-body">
@@ -54,7 +66,10 @@ export default {
     },
     data(){
         return {
-            productos:[]
+            productos:[],
+            productosMostrar:[],
+            TempProductosMostrar:[],
+            DatoBuscar:''
         }
     },
     mounted(){
@@ -64,10 +79,19 @@ export default {
         async mostrarproductos(){
             await this.axios.get('/api/productos').then(response=>{
                 this.productos = response.data.data
+                this.TempProductosMostrar = this.productos
+                this.productosMostrar =  this.TempProductosMostrar
             }).catch(error=>{
                 console.log(error)
                 this.productos = []
             })
+        },
+        tabs(tipo){
+            this.TempProductosMostrar = this.productos.filter(producto => producto.tipo.match(tipo))
+            this.productosMostrar =  this.TempProductosMostrar
+        },
+        buscar(){
+            this.productosMostrar = this.TempProductosMostrar.filter(producto => producto.nombre.toUpperCase().match(this.DatoBuscar.toUpperCase()));
         }
     }
 }

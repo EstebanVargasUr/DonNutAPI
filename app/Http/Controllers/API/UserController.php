@@ -66,9 +66,9 @@ class UserController extends Controller
         $this->authorize('view',User::class);
 
         $user = User::where('rol',$rol)
-        ->firstOrFail();
+        ->get();
         
-        return (new UserResource($user))
+        return (UserResource::collection(($user)))
                 ->response()
                 ->setStatusCode(200);
     }

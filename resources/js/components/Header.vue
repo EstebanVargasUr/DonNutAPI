@@ -15,7 +15,10 @@
                 </li>
                 <li class="nav-item">
                     <router-link exact-active-class="active" to="/productos" class="nav-link">productos</router-link>
-                </li>         
+                </li>     
+                <li class="nav-item">
+                    <router-link exact-active-class="active" to="/usuarios" class="nav-link">usuarios</router-link>
+                </li>     
             </ul>
             <div class="text-end">
                 <a v-on:click="cerrarSesion"><i class="fas fa-sign-out-alt"></i></a>

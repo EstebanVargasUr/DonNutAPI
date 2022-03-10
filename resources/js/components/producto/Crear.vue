@@ -11,10 +11,9 @@
                 <div class="col">
                     <label>Categoría</label>
                     <select class="form-select" v-model="tipo" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
                         <option value="Saladas">Saladas</option>
                         <option value="Dulces">Dulces</option>
-                        <option value="Banner">Banner</option>
+                        <option value="Banners">Banners</option>
                     </select>
                 </div>
                 <div class="col">
@@ -137,7 +136,7 @@ export default {
                 fd.append('nombre',this.nombre)
                 fd.append('tipo',this.tipo)
                 fd.append('precio',this.precio)
-                if(this.imgPreviewBanner != null && this.tipo === 'Banner') fd.append('imgBanner',this.imgPreviewBanner)
+                if(this.imgPreviewBanner != null && this.tipo === 'Banners') fd.append('imgBanner',this.imgPreviewBanner)
                 if(this.imgPreviewPrincipal != null) fd.append('imgProducto',this.imgPreviewPrincipal)
                 fd.append('descripcion',this.descripcion)
                 fd.append('estado',this.estado)

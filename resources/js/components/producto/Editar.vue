@@ -11,16 +11,14 @@
                 <div class="col">
                     <label>Categoría</label>
                     <select class="form-select" v-model="producto.tipo" v-on:change="ocultarBanner" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
                         <option value="Saladas">Saladas</option>
                         <option value="Dulces">Dulces</option>
-                        <option value="Banner">Banner</option>
+                        <option value="Banners">Banners</option>
                     </select>
                 </div>
                 <div class="col">
                     <label>Estado</label>
                     <select class="form-select" v-model="producto.estado" aria-label="Default select example">
-                        <option selected>Open this select menu</option>
                         <option value="REVISION">Revisión</option>
                         <option value="ACTIVO">Activo</option>
                         <option value="INACTIVO">Inactivo</option>
@@ -112,11 +110,9 @@ export default {
             })
         },
         ocultarBanner(){
-            if(this.producto.tipo === 'Banner'){
-                console.log('cambio')
+            if(this.producto.tipo === 'Banners'){
                 document.getElementById('banner').style.display = 'block';
             }else{
-                console.log(this.producto.imgBanner)
                 document.getElementById('banner').style.display = 'none';
             }
             
@@ -163,7 +159,7 @@ export default {
                 fd.append('nombre',this.producto.nombre)
                 fd.append('tipo',this.producto.tipo)
                 fd.append('precio',this.producto.precio)
-                if(this.imgPreviewBanner != null && this.producto.tipo==='Banner') fd.append('imgBanner',this.imgPreviewBanner)
+                if(this.imgPreviewBanner != null && this.producto.tipo==='Banners') fd.append('imgBanner',this.imgPreviewBanner)
                 if(this.imgPreviewPrincipal != null) fd.append('imgProducto',this.imgPreviewPrincipal)
                 fd.append('descripcion',this.producto.descripcion)
                 fd.append('estado',this.producto.estado)
@@ -173,7 +169,6 @@ export default {
                     this.$router.push({name:"mostrarProductos"})
                 }).catch(error=>{
                     console.log(error)
-                    console.log(response.data)
                 })
             }
         }
