@@ -5,6 +5,8 @@ use App\Http\Controllers\API\ProductoCarritoController;
 use App\Http\Controllers\API\PedidoController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\PasswordResetRequestController;
+use App\Http\Controllers\API\ChangePasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -61,5 +63,6 @@ Route::group([
     Route::post('refresh', [AuthController::class, 'refresh'])->name('refresh');
     Route::post('me', [AuthController::class, 'me'])->name('me');
     Route::post('register', [AuthController::class, 'register'])->name('register');
-    
+    Route::post('sendPasswordResetLink', [PasswordResetRequestController::class,'sendEmail']);
+    Route::post('resetPassword', [ChangePasswordController::class,'passwordResetProcess']);
 });

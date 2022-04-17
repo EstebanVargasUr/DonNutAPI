@@ -1,5 +1,6 @@
 const Home = () => import('./components/Home.vue')
 const Login = () => import('./components/auth/Login.vue')
+const PasswordReset = () => import('./components/auth/PasswordReset.vue')
 const NotFound = () => import('./components/NotFound.vue')
 
 //importamos los componentes para el Producto
@@ -24,6 +25,11 @@ export const routes = [
             if(!localStorage.getItem('token')) next({ name: 'login' })
             else next()
         }
+    },
+    {
+        name: 'passwordReset',
+        path: '/reset-password/:token',
+        component: PasswordReset
     },
     {
         name: 'mostrarProductos',
