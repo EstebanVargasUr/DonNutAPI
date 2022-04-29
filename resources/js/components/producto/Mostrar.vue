@@ -26,7 +26,6 @@
                 </div>
             </div>
             
-
             <div class="row gy-4 my-4">
                 <div class="col-lg-2 col-md-3 col-sm-4 col-6"  v-for="producto in productosMostrar" :key="producto.idProducto">
                     <div  class="card h-100">       
@@ -40,18 +39,6 @@
                     </div>
                     
                 </div>
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <div class="card h-100">
-                    <img src="https://static.wixstatic.com/media/7d2a1b_a2d6e3f9e8a94937aaf9d6e3e8253a64~mv2.png/v1/fill/w_515,h_414,al_c,q_85/DonutBox_1240x460_edited.webp" class="card-img-top" alt="images">
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    </div>
-                    <div class="card-footer" style="background-color: #fff;">
-                            <a href="#" class="btn btn-primary w-100">Ver más</a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>   
     </div>
@@ -59,6 +46,7 @@
 
 <script>
 import Header from '../Header.vue';
+import alerts from '../Alerts.vue';
 export default {
     name:"productos",
     components:{
@@ -77,12 +65,15 @@ export default {
     },
     methods:{
         async mostrarproductos(){
+            alerts.loading()
             await this.axios.get('/api/productos').then(response=>{
                 this.productos = response.data.data
                 this.TempProductosMostrar = this.productos
                 this.productosMostrar =  this.TempProductosMostrar
+                swal.close()
             }).catch(error=>{
-                console.log(error)
+                alerts.error('Oops...', error.response.data.error)
+                console.log(error.response.data)
                 this.productos = []
             })
         },

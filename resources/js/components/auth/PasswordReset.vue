@@ -25,11 +25,13 @@
                     <form @submit.prevent="cambiarPassword">
                        <div class="mb-4">
                            <label for="password" class="form-label">Nueva Contraseña</label>
-                           <input type="password" class="form-control" name="password" v-model="password" required>
+                           <input type="password" class="form-control" name="password" v-model="password" 
+                            maxlength="16" minlength="6" required>
                        </div>
                         <div class="mb-4">
                            <label for="password_confirm" class="form-label">Confirmar Contraseña</label>
-                           <input type="password" class="form-control" name="password_confirm" v-model="password_confirmation" required>
+                           <input type="password" class="form-control" name="password_confirm" v-model="password_confirmation"
+                            maxlength="16" minlength="6" required>
                        </div>
                        <div class="mt-5 d-grid">
                            <button type="submit" class="btn btn-primary">Cambiar</button>
@@ -43,6 +45,7 @@
 
 
 <script>
+import alerts from '../Alerts.vue';
 export default {
     name:"passwordReset",
     data(){
@@ -56,13 +59,15 @@ export default {
     },
     methods:{
         async cambiarPassword(){
+            alerts.loading()
             await this.axios.post('/api/auth/resetPassword',{
                 token: this.$route.params.token,
                 password: this.password,
                 password_confirmation: this.password_confirmation
             }).then(response=>{
-               //Exito
+               alerts.success('Buen trabajo!','Su cambio de contraseña ha sido exitoso')
             }).catch(error=>{
+                alerts.error('Oops...',error.response.data.error)
                 console.log(response.data)
             })
         },

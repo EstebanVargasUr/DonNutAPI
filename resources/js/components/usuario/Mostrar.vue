@@ -62,7 +62,8 @@
                 <div class="modal-body">
                     <form @submit.prevent="buscarUsuario" id="formBuscarUsuario">
                         <div class="input-group">
-                        <input type="email" class="form-control rounded" placeholder="Correo" aria-label="Search" aria-describedby="search-addon" v-model="correoBuscar" required/>
+                        <input type="email" class="form-control rounded" placeholder="Correo" aria-label="Search" aria-describedby="search-addon" v-model="correoBuscar"
+                         pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}" maxlength="50" required>
                             <button type="submit" class="btn btn-outline-primary">Buscar</button>
                         </div>
                     </form>
@@ -95,7 +96,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" v-on:click="actualizarUsuario()" class="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
+                    <button type="button" id="btnGuardar" v-on:click="actualizarUsuario()" class="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
                 </div>
                 </div>
             </div>
@@ -106,6 +107,7 @@
 <script>
 import Header from '../Header.vue';
 import auth from '../auth/auth.vue';
+import alerts from '../Alerts.vue';
 export default {
     name:"usuarios",
     components:{
@@ -131,25 +133,29 @@ export default {
     },
     methods:{
         async mostrarUsuarios(rol){
+            alerts.loading()
             var token = await auth.refreshToken()
             if(token != ''){
                 const config = {
-                        headers:{
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + token
-                        }
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
                     }
+                }
 
                 await this.axios.get('/api/user/rol/' + rol,config).then(response=>{
                     this.usuarios = response.data.data
                     this.rolSeleccionado = rol
+                    swal.close()
                 }).catch(error=>{
-                    console.log(error)
+                    alerts.error('Oops...',error.response.data.error)
+                    console.log(error.response.data)
                     this.usuarios = []
                 })
             }
         },
         async buscarUsuario(){
+            alerts.loading()
             var token = await auth.refreshToken()
             if(token != ''){
                 const config = {
@@ -162,9 +168,14 @@ export default {
                 await this.axios.get('/api/user/email/' + this.correoBuscar,config).then(response=>{
                     this.usuarioModal = response.data.data
                     document.getElementById('usuarioModal').style.display= 'block'
+                    document.getElementById('btnGuardar').style.display= 'block'
+                    swal.close()
                 }).catch(error=>{
-                    console.log(error)
-                    this.usuarioModal = null
+                    document.getElementById('usuarioModal').style.display= 'none'
+                    document.getElementById('btnGuardar').style.display= 'none'
+                    alerts.error('Oops...',error.response.data.error)
+                    console.log(error.response.data)
+                    //this.usuarioModal = null
                 })
             }
         },
@@ -177,23 +188,29 @@ export default {
                         'Authorization': 'Bearer ' + token
                     }
                 }
-
-                await this.axios.put('/api/user/' + this.usuarioModal.idUsuario,{rol: this.usuarioModal.rol},config).then(response=>{
+                if(JSON.parse(localStorage.getItem('user')).email == this.usuarioModal.email){
+                    alerts.error('Error','La cuenta de usuario en uso no puede cambiar sus' 
+                    +' privilegios por medidas de seguridad.')
+                }else{
+                    await this.axios.put('/api/user/' + this.usuarioModal.idUsuario,{rol: this.usuarioModal.rol},config).then(response=>{
                     this.mostrarUsuarios(this.rolSeleccionado)
                 }).catch(error=>{
                     console.log(error)
                 })
+                }
             }
         },
         cargar(usuario){
             if(usuario){
                 document.getElementById('formBuscarUsuario').style.display= 'none'
                 document.getElementById('usuarioModal').style.display= 'block'
+                document.getElementById('btnGuardar').style.display= 'block'
                 this.usuarioModal = Object.assign({}, usuario)
             }
             else{
                 document.getElementById('formBuscarUsuario').style.display='block'
                 document.getElementById('usuarioModal').style.display= 'none'
+                document.getElementById('btnGuardar').style.display= 'none'
                 this.usuarioModal = {
                     idUsuario:'',
                     nombre:'',
@@ -203,7 +220,6 @@ export default {
                     rol:''
                 }
                 this.correoBuscar=''
-                
             }
         }
     }

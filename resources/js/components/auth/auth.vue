@@ -10,7 +10,7 @@ export default {
             }
         }
 
-        if(expires_in < currentDate){
+        if(expires_in - currentDate < 600){
             await axios.post('/api/auth/refresh','',config).then(response=>{
                 localStorage.setItem('token',  JSON.stringify(response.data))
                 return response.data.token
@@ -20,6 +20,7 @@ export default {
                     this.$router.push('login')
                 }
                 console.log(error.response.data.message)
+                swal.close()
                 return '';
             })
         }
